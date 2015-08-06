@@ -30,7 +30,6 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     MovieViewHolder mViewholder;
     private final RecyclerCardCallback mRecyclerCardCallback;
 
-  //  public  static String mDefaulImagetSize = IMAGE_MEDIUM_SIZE;
 
     public MovieRecyclerAdapter(Context context, RecyclerCardCallback recyclerCardCallback) {
         this.context = context;
@@ -42,14 +41,6 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_movie, viewGroup, false);
         mViewholder = new MovieViewHolder(v);
-
-    /*    mViewholder.mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRecyclerCardCallback.onItemImageClick(mViewholder.getAdapterPosition());
-            }
-        });*/
-
         return mViewholder;
     }
 
@@ -60,9 +51,7 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             MovieViewHolder viewHolder = (MovieViewHolder) vh;
             Movie selectedItem = items.get(i);
             viewHolder.mMovieNameView.setText(selectedItem.getOriginal_title());
-            viewHolder.mMovieRatingView.setText(selectedItem.getVote_average()+"");
-            //viewHolder.mImageView.setOnClickListener(this);
-            // Picasso.with(context).setLoggingEnabled(true);
+         //   viewHolder.mMovieRatingView.setText(selectedItem.getVote_average()+"");
             Picasso.with(context).load(RecyclerItem.makeTmdbURL(selectedItem.getPoster_path())).into(viewHolder.mImageView);
             mViewholder.mImageView.setOnTouchListener(new ImageOnTouchListener(i));
             }
@@ -99,9 +88,9 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             public int compare(Movie lhs, Movie rhs) {
 
                 if (lhs.getPopularity() > rhs.getPopularity())
-                    return 1;
-                else
                     return -1;
+                else
+                    return 1;
             }
         });
         notifyDataSetChanged();
@@ -113,10 +102,10 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             @Override
             public int compare(Movie lhs, Movie rhs) {
 
-                if (lhs.getVote_count() > rhs.getVote_count())
-                    return 1;
-                else
+                if (lhs.getVote_average() > rhs.getVote_average())
                     return -1;
+                else
+                    return 1;
             }
         });
         notifyDataSetChanged();

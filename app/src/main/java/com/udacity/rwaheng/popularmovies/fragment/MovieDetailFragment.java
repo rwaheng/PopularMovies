@@ -2,6 +2,7 @@ package com.udacity.rwaheng.popularmovies.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.rwaheng.popularmovies.R;
+import com.udacity.rwaheng.popularmovies.util.ColumnCalculator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -35,10 +37,14 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         ImageView imageView;
 
+        Point size= ColumnCalculator.getScreenSize(appCompatActivity);
+
         Intent intent = appCompatActivity.getIntent();
          View view=inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         imageView = (ImageView)view.findViewById(R.id.movie_image);
+        imageView.setMaxHeight(size.y/2);
+        imageView.setMaxWidth(size.x-20);
         Picasso.with(appCompatActivity).load(intent.getStringExtra("image_path")).into(imageView);
 
         TextView titleView = (TextView)view.findViewById(R.id.title);

@@ -13,6 +13,6 @@ public class MovieDetailActivity extends BaseActivity {
     protected int getLayoutResource() {
         return R.layout.activity_movie_detail;
     }
-    
+
 
 }

@@ -6,8 +6,8 @@
         android:orderInCategory="100"
         app:showAsAction="never" />
 
-    <item android:id="@+id/action_settings_release"
-        android:title="@string/action_settings_release"
+    <item android:id="@+id/action_settings_rating"
+        android:title="@string/action_settings_rating"
         android:orderInCategory="100"
         app:showAsAction="never" />
 

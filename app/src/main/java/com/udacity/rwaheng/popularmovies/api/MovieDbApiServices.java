@@ -12,23 +12,6 @@ import retrofit.http.Query;
 
 
 public interface MovieDbApiServices {
-	/*
-	 What movies are in theatres?
-     URL: /discover/movie?primary_release_date.gte=2014-09-15&primary_release_date.lte=2014-10-22
-    */
-	 @GET("/discover/movie")
-     void GetMoviesByReleaseDate(
-			 @Query("primary_release_date.gte") String from,
-			 @Query("primary_release_date.lt") String to,
-			 @Query("page") String page,
-			 Callback<List<Results>> callback);
-
-	 @GET("/discover/movie")
-	 Results GetMoviesByReleaseDate(
-			 @Query("primary_release_date.gte") String from,
-			 @Query("primary_release_date.lt") String to,
-			 @Query("page") String page);
-
 
 /*
 What are the most popular movies?
@@ -49,6 +32,23 @@ What is are the best movies from 2010?
 
 URL: /discover/movie?primary_release_year=2010&sort_by=vote_average.desc
 */
+
+	/*
+	 What movies are in theatres?
+     URL: /discover/movie?primary_release_date.gte=2014-09-15&primary_release_date.lte=2014-10-22
+    */
+	@GET("/discover/movie")
+	void GetMoviesByReleaseDate(
+			@Query("primary_release_date.gte") String from,
+			@Query("primary_release_date.lt") String to,
+			@Query("page") String page,
+			Callback<List<Results>> callback);
+
+	@GET("/discover/movie")
+	Results GetMoviesByReleaseDate(
+			@Query("primary_release_date.gte") String from,
+			@Query("primary_release_date.lt") String to,
+			@Query("page") String page);
 
 
 

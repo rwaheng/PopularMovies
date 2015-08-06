@@ -15,7 +15,4 @@
     <color name="light_gray">#FAFAFA</color>
     <color name="counter_bg">#E21B45</color>
 
-    <color name="social_button_background">#EEEEEE</color>
-    <color name="social_button_label">#6D6D6D</color>
-    <color name="social_button_count">#bdbdbd</color>
 </resources>

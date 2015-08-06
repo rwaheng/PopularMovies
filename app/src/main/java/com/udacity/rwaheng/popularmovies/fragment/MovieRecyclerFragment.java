@@ -13,11 +13,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.udacity.rwaheng.popularmovies.util.PreferencesManager;
 import com.udacity.rwaheng.popularmovies.R;
 import com.udacity.rwaheng.popularmovies.activity.MovieDetailActivity;
-import com.udacity.rwaheng.popularmovies.adapter.ColumnCalculator;
+import com.udacity.rwaheng.popularmovies.util.ColumnCalculator;
 import com.udacity.rwaheng.popularmovies.adapter.MovieRecyclerAdapter;
 import com.udacity.rwaheng.popularmovies.adapter.RecyclerItem;
 import com.udacity.rwaheng.popularmovies.api.MovieDbApiClient;
@@ -40,6 +40,7 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
     private Results mResult;
     private boolean mApiCallingFlag;
     LayoutInflater mInflater;
+    private PreferencesManager  pref;
 
     final private int MAX_PAGE = 4;
     private int PAGE_COUNT = 1;
@@ -56,27 +57,22 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
 
         if (mRecyclerView == null) {
             mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_card_fragment, container, false);
-            mMovieRecyclerAdapter = new MovieRecyclerAdapter(appCompatActivity,this);
+            mMovieRecyclerAdapter = new MovieRecyclerAdapter(appCompatActivity, this);
             GridLayoutManager layoutManager = new GridLayoutManager(appCompatActivity, ColumnCalculator.getMaxColumnsForScreen(appCompatActivity, 300));
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setAdapter(mMovieRecyclerAdapter);
+            pref = PreferencesManager.initializeInstance(appCompatActivity);
+            //Log.v(LOG_TAG, "onCreateView " + "execute  " + pref.getValue());
+            new FetchMovie().execute(PAGE_COUNT, pref.getValue());
             setHasOptionsMenu(true);
-         //   mRecyclerView.addOnScrollListener(new ScrollListener());
-
-            //  layoutManager.get
         }
-        new FetchMovie().execute(PAGE_COUNT, "popularity.desc");
-       // new FetchMovie().execute(PAGE_COUNT, "vote_average.desc");
-
         return mRecyclerView;
     }
 
     @Override
     public void onItemImageClick(int position) {
-        Toast.makeText(appCompatActivity, "check image", Toast.LENGTH_LONG).show();
+       // Toast.makeText(appCompatActivity, "check image", Toast.LENGTH_LONG).show();
         List<Movie> array=mMovieRecyclerAdapter.getItems();
-
-
         Intent intent= new Intent(appCompatActivity,MovieDetailActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("title", array.get(position).getOriginal_title());
@@ -85,15 +81,11 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
         intent.putExtra("vote",array.get(position).getVote_average());
         intent.putExtra("release_date",array.get(position).getRelease_date());
         appCompatActivity.startActivity(intent);
-        // Log.v("click", "click");
-        //Toast.makeText(v.getContext(),"toast",Toast.LENGTH_SHORT);
-
-
     }
 
 
 
-//for SwipeRefreshLayout onRefresh
+//for SwipeRefreshLayout onRefresh only (not used)
     public void onRefresh() {
 
         // getSwipeRefreshLayout().postInvalidateDelayed(20000);
@@ -118,12 +110,21 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings_popularity) {
             //on selecting the option, Call APi call if there is no pending call
-            mMovieRecyclerAdapter.sortByPopularity();
-            Log.v(LOG_TAG, "sortByPopularity");
+           // mMovieRecyclerAdapter.sortByPopularity();
+
+            pref=PreferencesManager.initializeInstance(appCompatActivity);
+            pref.setValue(PreferencesManager.BY_POPULARITY);
+          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByPopularity  " + pref.getValue());
+            new FetchMovie().execute(PAGE_COUNT, pref.getValue());
+
             return true;
-        } else if (id == R.id.action_settings_release) {
-            mMovieRecyclerAdapter.sortByRating();
-            Log.v(LOG_TAG, "sortByRating");
+        } else if (id == R.id.action_settings_rating) {
+           // mMovieRecyclerAdapter.sortByRating();
+            pref=PreferencesManager.initializeInstance(appCompatActivity);
+            pref.setValue(PreferencesManager.BY_RATING);
+          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByRating  " + pref.getValue());
+            new FetchMovie().execute(PAGE_COUNT, pref.getValue());
+
             return true;
         }
 
@@ -135,7 +136,6 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
         @Override
         protected void onPostExecute(Object results) {
             super.onPostExecute(results);
-
             mResult = (Results) results;
 
             if (PAGE_COUNT == 1) {
@@ -148,7 +148,7 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
             }
 
 
-            PAGE_COUNT++;
+           // PAGE_COUNT++;//showing only 1 page now so no increment
             mApiCallingFlag = false;
             // mApiCallingFlag=false;
             //Log.v(LOG_TAG, "onPostExecute " + mResult.getResults().size());
@@ -156,7 +156,7 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
 
         @Override
         protected Object doInBackground(Object[] params) {
-            Log.v(LOG_TAG, "doInBackground ");
+            Log.v(LOG_TAG, "doInBackground  GetMoviesBy "+(int) params[0]+"   "+(String) params[1]);
             Results result;
             mApiCallingFlag = true;
             if (mMovieDbApiServices == null)

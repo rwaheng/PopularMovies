@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.udacity.rwaheng.popularvideo"
+        applicationId "com.udacity.rwaheng.pupolarmovies"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1

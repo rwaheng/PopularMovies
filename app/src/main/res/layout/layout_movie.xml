@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/item_height"
             android:id="@+id/movie_image"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:contentDescription="Movie Image" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -38,9 +39,12 @@
                     android:id="@+id/movie_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="20sp"
                     android:padding="8dp"
                     android:gravity="left"
-                    android:layout_gravity="left" />
+                    android:layout_gravity="left"
+                    android:textColor="#303030"
+                    />
 
                 <TextView
                     android:id="@+id/movie_rating"
@@ -49,7 +53,6 @@
                     android:textSize="15sp"
                     android:gravity="right"
                     android:layout_gravity="right"
-                    android:textColor="@color/social_button_count"
                     android:padding="5dp"/>
             </LinearLayout>
 
