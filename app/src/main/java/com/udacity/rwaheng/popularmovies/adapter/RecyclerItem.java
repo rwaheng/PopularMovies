@@ -37,7 +37,13 @@ public class RecyclerItem{
     }
 
     public static String makeTmdbURL(String path){
-        return IMAGE_BASE_URLl+RecyclerItem.getDefaultSize()+path;
+        String url;
+        if(null!=path)
+            url= IMAGE_BASE_URLl+RecyclerItem.getDefaultSize()+path;
+        else
+           url= NO_PICTURE;
+
+        return  url;
     }
 
     public static String getDefaultSize() {

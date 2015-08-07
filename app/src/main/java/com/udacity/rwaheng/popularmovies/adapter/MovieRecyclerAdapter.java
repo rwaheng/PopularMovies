@@ -4,6 +4,7 @@ import android.content.Context;
 
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,17 +24,20 @@ import java.util.List;
  * Created by rwaheng on 8/1/2015.
  */
 public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String LOG_TAG=MovieRecyclerAdapter.class.getSimpleName();
     private final Context context;
     private List<Movie> items;
 
 
     MovieViewHolder mViewholder;
-    private final RecyclerCardCallback mRecyclerCardCallback;
+   // private final RecyclerCardCallback mRecyclerCardCallback;
 
+   // RecyclerView mRecyclerView;
 
-    public MovieRecyclerAdapter(Context context, RecyclerCardCallback recyclerCardCallback) {
+    public MovieRecyclerAdapter(Context context) {
         this.context = context;
-        this.mRecyclerCardCallback = recyclerCardCallback;
+       // this.mRecyclerCardCallback = recyclerCardCallback;
+       // this.mRecyclerView=mRecyclerView;
     }
 
 
@@ -47,14 +51,15 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder vh, final int i) {
-        if (items != null) {
+       if (items != null) {
             MovieViewHolder viewHolder = (MovieViewHolder) vh;
             Movie selectedItem = items.get(i);
-            viewHolder.mMovieNameView.setText(selectedItem.getOriginal_title());
+           viewHolder.mMovieNameView.setText(selectedItem.getOriginal_title());
          //   viewHolder.mMovieRatingView.setText(selectedItem.getVote_average()+"");
             Picasso.with(context).load(RecyclerItem.makeTmdbURL(selectedItem.getPoster_path())).into(viewHolder.mImageView);
-            mViewholder.mImageView.setOnTouchListener(new ImageOnTouchListener(i));
-            }
+
+            //Log.v(LOG_TAG ,selectedItem.getOriginal_title()+" "+i);
+           }
     }
 
     @Override
@@ -122,7 +127,7 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
 
-    class ImageOnTouchListener implements View.OnTouchListener {
+    class ImageOnTouchListener implements RecyclerView.OnTouchListener {
         private int position;
 
         @Override
@@ -138,7 +143,9 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                     break;
                 }
                 case MotionEvent.ACTION_UP:
-                    mRecyclerCardCallback.onItemImageClick(this.position);
+                  //  Log.v(LOG_TAG,"ACTION_UP"+this.position+v.getClass());
+                  //  int itemPosition = mRecyclerView.getChildPosition(c);
+                  //  mRecyclerCardCallback.onItemImageClick(this.position);
                 case MotionEvent.ACTION_CANCEL: {
                     ImageView view = (ImageView) v;
                     //clear the overlay

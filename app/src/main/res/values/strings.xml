@@ -5,7 +5,7 @@
     <string name="title_activity_home">HomeActivity</string>
 
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="action_settings_popularity">Popularity</string>
-    <string name="action_settings_rating">Rating</string>
+    <string name="action_settings_popularity">Most Popular</string>
+    <string name="action_settings_rating">Highest Rated</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
 </resources>

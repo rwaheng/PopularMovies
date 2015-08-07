@@ -13,7 +13,9 @@ public class PreferencesManager {
     public static final String BY_POPULARITY="popularity.desc";
     public static final String BY_RATING="vote_average.desc";
 
+
     public static final String KEY_SORT_BY="sort_by";
+    public static final String PAGE_COUNT="page_count";
 
 
 
@@ -32,15 +34,28 @@ public class PreferencesManager {
     }
 
 
-    public void setValue(String value) {
+    public void setValueSortBy(String value) {
         mPref.edit()
                 .putString(KEY_SORT_BY, value)
                 .apply();
     }
 
-    public String getValue() {
+    public void setValuePageCount(int value) {
+        mPref.edit()
+                .putInt(PAGE_COUNT, value)
+                .apply();
+    }
+
+
+    public String getValueSortBy() {
         return mPref.getString(KEY_SORT_BY, BY_POPULARITY);
     }
+
+    public int getValuePageCount() {
+        return mPref.getInt(PAGE_COUNT, 1);
+    }
+
+
 
     public void remove(String key) {
         mPref.edit()

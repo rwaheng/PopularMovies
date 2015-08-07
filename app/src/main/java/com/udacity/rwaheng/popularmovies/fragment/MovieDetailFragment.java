@@ -21,6 +21,10 @@ import com.udacity.rwaheng.popularmovies.util.ColumnCalculator;
  * A placeholder fragment containing a simple view.
  */
 public class MovieDetailFragment extends Fragment {
+
+    final static String LOG_TAG=MovieDetailFragment.class.getSimpleName();
+
+
     private AppCompatActivity appCompatActivity;
 
     public MovieDetailFragment() {
@@ -43,8 +47,8 @@ public class MovieDetailFragment extends Fragment {
          View view=inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         imageView = (ImageView)view.findViewById(R.id.movie_image);
-        imageView.setMaxHeight(size.y/2);
-        imageView.setMaxWidth(size.x-20);
+      //  imageView.setMaxHeight(size.y/2);
+       // imageView.setMaxWidth(size.x-20);
         Picasso.with(appCompatActivity).load(intent.getStringExtra("image_path")).into(imageView);
 
         TextView titleView = (TextView)view.findViewById(R.id.title);
@@ -59,15 +63,15 @@ public class MovieDetailFragment extends Fragment {
 
 
 
+/*
+        Log.v(LOG_TAG ,
+                "title:-  "+intent.getStringExtra("title") +
+                        "   image_path:-   "+intent.getStringExtra("image_path") +
+                        "   overview:-   "+intent.getStringExtra("overview") +
+                        "   vote:-   "+intent.getDoubleExtra("vote", 0) +
+                        "   release_date:-   "+intent.getStringExtra("release_date"));
 
-        Log.v("intent " ,
-                intent.getStringExtra("title") +
-                intent.getStringExtra("image_path") +
-                intent.getStringExtra("overview") +
-                intent.getDoubleExtra("vote", 0) +
-                intent.getStringExtra("release_date"));
-
-
+*/
 
         return view;
     }

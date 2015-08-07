@@ -8,11 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.ViewGroup.LayoutParams;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.udacity.rwaheng.popularmovies.util.PreferencesManager;
 import com.udacity.rwaheng.popularmovies.R;
@@ -30,7 +33,7 @@ import java.util.List;
 /**
  * Created by rwaheng on 8/1/2015.
  */
-public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdapter.RecyclerCardCallback {
+public class MovieRecyclerFragment extends Fragment {
     public static final String LOG_TAG = MovieRecyclerFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
@@ -38,11 +41,11 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
     private MovieDbApiServices mMovieDbApiServices;
     private AppCompatActivity appCompatActivity;
     private Results mResult;
-    private boolean mApiCallingFlag;
-    LayoutInflater mInflater;
+    private boolean mLoadingFlag;
+    private LayoutInflater mInflater;
     private PreferencesManager  pref;
 
-    final private int MAX_PAGE = 4;
+    final private int MAX_PAGE = 2;
     private int PAGE_COUNT = 1;
 
     @Override
@@ -57,21 +60,55 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
 
         if (mRecyclerView == null) {
             mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_card_fragment, container, false);
-            mMovieRecyclerAdapter = new MovieRecyclerAdapter(appCompatActivity, this);
+
             GridLayoutManager layoutManager = new GridLayoutManager(appCompatActivity, ColumnCalculator.getMaxColumnsForScreen(appCompatActivity, 300));
             mRecyclerView.setLayoutManager(layoutManager);
+            mMovieRecyclerAdapter = new MovieRecyclerAdapter(appCompatActivity);
             mRecyclerView.setAdapter(mMovieRecyclerAdapter);
             pref = PreferencesManager.initializeInstance(appCompatActivity);
-            //Log.v(LOG_TAG, "onCreateView " + "execute  " + pref.getValue());
-            new FetchMovie().execute(PAGE_COUNT, pref.getValue());
+            pref.setValuePageCount(PAGE_COUNT);
+           // Log.v(LOG_TAG, "onCreateView " + "execute  " + pref.getValuePageCount()+"  "+pref.getValueSortBy());
+
+            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
             setHasOptionsMenu(true);
+
+            mRecyclerView.addOnItemTouchListener(
+                    new RecyclerItemClickListener(appCompatActivity, new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            invokeMovieDetailActivity(position);
+                        }
+                    }));
+
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                 int visibleItemCount,totalItemCount,pastVisiblesItems;
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                   GridLayoutManager layoutManager= (GridLayoutManager) recyclerView.getLayoutManager();
+                    visibleItemCount=layoutManager.getChildCount();
+
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (!mLoadingFlag) {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
+                           // Log.v(LOG_TAG, "Wow");
+                        }
+                    }
+
+
+                 //   Log.v(LOG_TAG,"  "+dx+"  "+dy+"   "+totalItemCount+"   "+visibleItemCount+"    "+pastVisiblesItems+"  "+mLoadingFlag);
+                }
+            });
         }
         return mRecyclerView;
     }
 
-    @Override
-    public void onItemImageClick(int position) {
-       // Toast.makeText(appCompatActivity, "check image", Toast.LENGTH_LONG).show();
+
+    public void invokeMovieDetailActivity(int position) {
+
         List<Movie> array=mMovieRecyclerAdapter.getItems();
         Intent intent= new Intent(appCompatActivity,MovieDetailActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -89,13 +126,13 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
     public void onRefresh() {
 
         // getSwipeRefreshLayout().postInvalidateDelayed(20000);
-        Log.v("onRefresh", "onRefresh");
+       // Log.v("onRefresh", "onRefresh");
 
         if (PAGE_COUNT <= MAX_PAGE) {
-            Log.v(LOG_TAG, "onRefresh " + PAGE_COUNT);
+          //  Log.v(LOG_TAG, "onRefresh " + PAGE_COUNT);
             new FetchMovie().execute(PAGE_COUNT, "popularity.desc");
         } else {
-            Log.v(LOG_TAG, "onRefresh not call" + PAGE_COUNT);
+            //Log.v(LOG_TAG, "onRefresh not call" + PAGE_COUNT);
             //getSwipeRefreshLayout().setRefreshing(false);
         }
     }
@@ -113,17 +150,19 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
            // mMovieRecyclerAdapter.sortByPopularity();
 
             pref=PreferencesManager.initializeInstance(appCompatActivity);
-            pref.setValue(PreferencesManager.BY_POPULARITY);
-          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByPopularity  " + pref.getValue());
-            new FetchMovie().execute(PAGE_COUNT, pref.getValue());
+            pref.setValueSortBy(PreferencesManager.BY_POPULARITY);
+            pref.setValuePageCount(1);
+          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByPopularity  " + pref.getValueSortBy());
+            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
 
             return true;
         } else if (id == R.id.action_settings_rating) {
            // mMovieRecyclerAdapter.sortByRating();
             pref=PreferencesManager.initializeInstance(appCompatActivity);
-            pref.setValue(PreferencesManager.BY_RATING);
-          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByRating  " + pref.getValue());
-            new FetchMovie().execute(PAGE_COUNT, pref.getValue());
+            pref.setValueSortBy(PreferencesManager.BY_RATING);
+            pref.setValuePageCount(1);
+          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByRating  " + pref.getValueSortBy());
+            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
 
             return true;
         }
@@ -137,28 +176,31 @@ public class MovieRecyclerFragment extends Fragment implements MovieRecyclerAdap
         protected void onPostExecute(Object results) {
             super.onPostExecute(results);
             mResult = (Results) results;
+            pref=PreferencesManager.initializeInstance(appCompatActivity);
+            PAGE_COUNT=pref.getValuePageCount();
+            Log.v(LOG_TAG,"page count :-"+PAGE_COUNT+" "+pref.getValuePageCount());
 
             if (PAGE_COUNT == 1) {
                 mMovieRecyclerAdapter.addNewItems((List<Movie>) ((Results) results).getResults());
-                Log.v(LOG_TAG, "addNewItems " + PAGE_COUNT);
+              //  Log.v(LOG_TAG, "addNewItems " + PAGE_COUNT + " " + ((List<Movie>) ((Results) results).getResults()).size());
 
             } else if (PAGE_COUNT <= MAX_PAGE) {
                 mMovieRecyclerAdapter.addItems((List<Movie>) ((Results) results).getResults());
-                Log.v(LOG_TAG, "addItems " + PAGE_COUNT);
+              //  Log.v(LOG_TAG, "addItems " + PAGE_COUNT +" "+((List<Movie>) ((Results) results).getResults()).size());
             }
 
 
-           // PAGE_COUNT++;//showing only 1 page now so no increment
-            mApiCallingFlag = false;
-            // mApiCallingFlag=false;
+            PAGE_COUNT++;//showing only 1 page now so no increment
+            pref.setValuePageCount(PAGE_COUNT);
+            mLoadingFlag = false;
             //Log.v(LOG_TAG, "onPostExecute " + mResult.getResults().size());
         }
 
         @Override
         protected Object doInBackground(Object[] params) {
-            Log.v(LOG_TAG, "doInBackground  GetMoviesBy "+(int) params[0]+"   "+(String) params[1]);
+           Log.v(LOG_TAG, "doInBackground  GetMoviesBy "+(int) params[0]+"   "+(String) params[1]);
             Results result;
-            mApiCallingFlag = true;
+            mLoadingFlag = true;
             if (mMovieDbApiServices == null)
                 mMovieDbApiServices = MovieDbApiClient.getMovieService();
             result = mMovieDbApiServices.GetMoviesBy((int) params[0], (String) params[1]);

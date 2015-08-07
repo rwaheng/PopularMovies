@@ -22,6 +22,19 @@ public class MovieViewHolder extends RecyclerView.ViewHolder
         mImageView = (ImageView) itemView.findViewById(R.id.movie_image);
         mMovieNameView = (TextView) itemView.findViewById(R.id.movie_name);
         mMovieRatingView = (TextView) itemView.findViewById(R.id.movie_rating);
+     //   mImageView.setOnClickListener(new onClick());
 
     }
+/*
+    class onClick implements RecyclerView.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            //mRecyclerCardCallback.
+
+            //int position =((RecyclerView)mRecyclerView).getChildAdapterPosition((ImageView) v);
+
+            // mRecyclerCardCallback.onItemImageClick(v);
+        }
+    }*/
 }
