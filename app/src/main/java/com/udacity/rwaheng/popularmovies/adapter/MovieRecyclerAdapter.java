@@ -16,6 +16,7 @@ import com.udacity.rwaheng.popularmovies.R;
 import com.udacity.rwaheng.popularmovies.model.Movie;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.List;
 public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String LOG_TAG=MovieRecyclerAdapter.class.getSimpleName();
     private final Context context;
-    private List<Movie> items;
+    private ArrayList<Movie> items;
 
 
     MovieViewHolder mViewholder;
@@ -67,16 +68,16 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         return items != null ? items.size() : 0;
     }
 
-    public List<Movie> getItems() {
+    public ArrayList<Movie> getItems() {
         return items;
     }
 
-    public void setItems(List<Movie> items) {
+    public void setItems(ArrayList<Movie> items) {
         this.items = items;
 
     }
 
-    public void addNewItems(List<Movie> items) {
+    public void addNewItems(ArrayList<Movie> items) {
         this.items = items;
         notifyDataSetChanged();
     }

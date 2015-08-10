@@ -28,6 +28,7 @@ import com.udacity.rwaheng.popularmovies.api.MovieDbApiServices;
 import com.udacity.rwaheng.popularmovies.model.Movie;
 import com.udacity.rwaheng.popularmovies.model.Results;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +41,8 @@ public class MovieRecyclerFragment extends Fragment {
     private MovieRecyclerAdapter mMovieRecyclerAdapter;
     private MovieDbApiServices mMovieDbApiServices;
     private AppCompatActivity appCompatActivity;
-    private Results mResult;
+    private ArrayList<Movie> movieList;
+  //  private Results mResult;
     private boolean mLoadingFlag;
     private LayoutInflater mInflater;
     private PreferencesManager  pref;
@@ -55,8 +57,15 @@ public class MovieRecyclerFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("message", "This is my message to be reloaded");
+       outState.putParcelableArrayList("list", movieList);
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
 
         if (mRecyclerView == null) {
             mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_card_fragment, container, false);
@@ -68,10 +77,20 @@ public class MovieRecyclerFragment extends Fragment {
             pref = PreferencesManager.initializeInstance(appCompatActivity);
             pref.setValuePageCount(PAGE_COUNT);
            // Log.v(LOG_TAG, "onCreateView " + "execute  " + pref.getValuePageCount()+"  "+pref.getValueSortBy());
+            if(savedInstanceState!=null){
+                ArrayList<Movie> list=savedInstanceState.getParcelableArrayList("list");
+                if(list!=null) {
+                    mMovieRecyclerAdapter.addNewItems(list);
+                    Log.v(LOG_TAG, "restore-----------" + list.size());
+                }
+                else {
+                    Log.e(LOG_TAG, "FAILED to Restored");
+                }
 
-            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
-            setHasOptionsMenu(true);
-
+            }else {
+                new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
+                setHasOptionsMenu(true);
+            }
             mRecyclerView.addOnItemTouchListener(
                     new RecyclerItemClickListener(appCompatActivity, new RecyclerItemClickListener.OnItemClickListener() {
                         @Override
@@ -92,7 +111,7 @@ public class MovieRecyclerFragment extends Fragment {
                     pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
                     if (!mLoadingFlag) {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount && PAGE_COUNT<=MAX_PAGE) {
                             new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
                            // Log.v(LOG_TAG, "Wow");
                         }
@@ -175,22 +194,26 @@ public class MovieRecyclerFragment extends Fragment {
         @Override
         protected void onPostExecute(Object results) {
             super.onPostExecute(results);
-            mResult = (Results) results;
+            movieList = ((Results) results).getResults();
             pref=PreferencesManager.initializeInstance(appCompatActivity);
             PAGE_COUNT=pref.getValuePageCount();
             Log.v(LOG_TAG,"page count :-"+PAGE_COUNT+" "+pref.getValuePageCount());
 
             if (PAGE_COUNT == 1) {
-                mMovieRecyclerAdapter.addNewItems((List<Movie>) ((Results) results).getResults());
+                mMovieRecyclerAdapter.addNewItems(movieList);
+                movieList=mMovieRecyclerAdapter.getItems();
               //  Log.v(LOG_TAG, "addNewItems " + PAGE_COUNT + " " + ((List<Movie>) ((Results) results).getResults()).size());
+                PAGE_COUNT++;
 
             } else if (PAGE_COUNT <= MAX_PAGE) {
-                mMovieRecyclerAdapter.addItems((List<Movie>) ((Results) results).getResults());
+                mMovieRecyclerAdapter.addItems(movieList);
+                movieList=mMovieRecyclerAdapter.getItems();
               //  Log.v(LOG_TAG, "addItems " + PAGE_COUNT +" "+((List<Movie>) ((Results) results).getResults()).size());
+                PAGE_COUNT++;
             }
 
 
-            PAGE_COUNT++;//showing only 1 page now so no increment
+            //showing only 1 page now so no increment
             pref.setValuePageCount(PAGE_COUNT);
             mLoadingFlag = false;
             //Log.v(LOG_TAG, "onPostExecute " + mResult.getResults().size());

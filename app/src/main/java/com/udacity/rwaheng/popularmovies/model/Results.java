@@ -8,7 +8,7 @@ import java.util.List;
 public class Results {
 
     private Integer page;
-    private List<Movie> results = new ArrayList<Movie>();
+    private ArrayList<Movie> results = new ArrayList<Movie>();
     private Integer total_pages;
     private Integer total_results;
   
@@ -31,11 +31,11 @@ public class Results {
         this.page = page;
     }
 
-    public List<Movie> getResults() {
+    public ArrayList<Movie> getResults() {
         return results;
     }
 
-    public void setResults(List<Movie> results) {
+    public void setResults(ArrayList<Movie> results) {
         this.results = results;
     }
 

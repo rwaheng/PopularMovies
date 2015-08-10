@@ -6,8 +6,8 @@ import retrofit.RestAdapter;
 
 public class MovieDbApiClient {
     private static MovieDbApiServices movieclient;
-    private static String api_key="<<Add key>>";//removed for submission
-
+    private static String api_key="8b7ea7261c27a2eb09a9c14725e9e588";//removed for submission
+//8b7ea7261c27a2eb09a9c14725e9e588
     public static MovieDbApiServices getMovieService() {
         if (movieclient == null) {
             RestAdapter restAdapter = new RestAdapter.Builder()
