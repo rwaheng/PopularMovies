@@ -78,10 +78,12 @@ public class MovieRecyclerFragment extends Fragment {
             pref.setValuePageCount(PAGE_COUNT);
            // Log.v(LOG_TAG, "onCreateView " + "execute  " + pref.getValuePageCount()+"  "+pref.getValueSortBy());
             if(savedInstanceState!=null){
-                ArrayList<Movie> list=savedInstanceState.getParcelableArrayList("list");
-                if(list!=null) {
-                    mMovieRecyclerAdapter.addNewItems(list);
-                    Log.v(LOG_TAG, "restore-----------" + list.size());
+               // ArrayList<Movie>
+
+                movieList=savedInstanceState.getParcelableArrayList("list");
+                if(movieList!=null) {
+                    mMovieRecyclerAdapter.addNewItems(movieList);
+                    Log.v(LOG_TAG, "restore-----------" + movieList.size());
                 }
                 else {
                     Log.e(LOG_TAG, "FAILED to Restored");
@@ -91,6 +93,8 @@ public class MovieRecyclerFragment extends Fragment {
                 new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
                 setHasOptionsMenu(true);
             }
+
+
             mRecyclerView.addOnItemTouchListener(
                     new RecyclerItemClickListener(appCompatActivity, new RecyclerItemClickListener.OnItemClickListener() {
                         @Override
