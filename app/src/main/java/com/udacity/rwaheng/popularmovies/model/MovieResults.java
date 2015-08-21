@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Results {
+public class MovieResults {
 
     private Integer page;
-    private ArrayList<Movie> results = new ArrayList<Movie>();
+    private ArrayList<MovieBean> results = new ArrayList<MovieBean>();
     private Integer total_pages;
     private Integer total_results;
   
@@ -31,11 +31,11 @@ public class Results {
         this.page = page;
     }
 
-    public ArrayList<Movie> getResults() {
+    public ArrayList<MovieBean> getResults() {
         return results;
     }
 
-    public void setResults(ArrayList<Movie> results) {
+    public void setResults(ArrayList<MovieBean> results) {
         this.results = results;
     }
 

@@ -3,6 +3,7 @@ package com.udacity.rwaheng.popularmovies.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.rwaheng.popularmovies.R;
+import com.udacity.rwaheng.popularmovies.adapter.RecyclerItem;
+import com.udacity.rwaheng.popularmovies.api.MovieDbApiClient;
+import com.udacity.rwaheng.popularmovies.api.MovieDbApiServices;
+import com.udacity.rwaheng.popularmovies.model.MovieBean;
 import com.udacity.rwaheng.popularmovies.util.ColumnCalculator;
 
 /**
@@ -23,6 +28,8 @@ import com.udacity.rwaheng.popularmovies.util.ColumnCalculator;
 public class MovieDetailFragment extends Fragment {
 
     final static String LOG_TAG=MovieDetailFragment.class.getSimpleName();
+
+    MovieDbApiServices mMovieDBApiServices=null;
 
 
     private AppCompatActivity appCompatActivity;
@@ -41,25 +48,27 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         ImageView imageView;
 
-        Point size= ColumnCalculator.getScreenSize(appCompatActivity);
+       // Point size= ColumnCalculator.getScreenSize(appCompatActivity);
 
         Intent intent = appCompatActivity.getIntent();
          View view=inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
+        MovieBean movie = intent.getExtras().getParcelable("movie");
         imageView = (ImageView)view.findViewById(R.id.movie_image);
-      //  imageView.setMaxHeight(size.y/2);
-       // imageView.setMaxWidth(size.x-20);
-        Picasso.with(appCompatActivity).load(intent.getStringExtra("image_path")).into(imageView);
+
+        Picasso.with(appCompatActivity).load(RecyclerItem.makeTmdbURL(movie.getPoster_path())).into(imageView);
 
         TextView titleView = (TextView)view.findViewById(R.id.title);
         TextView overviewView = (TextView)view.findViewById(R.id.overview);
         TextView vote = (TextView)view.findViewById(R.id.vote);
         TextView realeaseDateView = (TextView)view.findViewById(R.id.release_date);
 
-        titleView.setText(intent.getStringExtra("title"));
-        overviewView.setText(intent.getStringExtra("overview"));
-        vote.setText(intent.getDoubleExtra("vote", 0)+"");
-        realeaseDateView.setText(intent.getStringExtra("release_date"));
+
+        titleView.setText(movie.getTitle());
+        overviewView.setText(movie.getOverview());
+        vote.setText(""+movie.getVote_average());
+        realeaseDateView.setText(movie.getRelease_date());
+        Log.v(LOG_TAG,movie.getOriginal_title());
 
 
 
@@ -75,4 +84,38 @@ public class MovieDetailFragment extends Fragment {
 
         return view;
     }
+
+
+    class FetchVideo extends AsyncTask {
+        final static String REVIEW="review";
+        final static String VIDEO="video";
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            if(mMovieDBApiServices==null)
+                mMovieDBApiServices= MovieDbApiClient.getMovieService();
+
+
+        if(null!=params[0])
+            return mMovieDBApiServices.getVideos((String) params[0]);
+            else
+            return null;
+        }
+    }
+
+    class FetchReview extends AsyncTask {
+        final static String REVIEW="review";
+        final static String VIDEO="video";
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            if(mMovieDBApiServices==null)
+                mMovieDBApiServices= MovieDbApiClient.getMovieService();
+            if(null!=params[0])
+                return mMovieDBApiServices.getReviews((String) params[0]);
+            else
+                return null;
+        }
+    }
+    
 }

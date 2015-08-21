@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.rwaheng.popularmovies.R;
-import com.udacity.rwaheng.popularmovies.model.Movie;
+import com.udacity.rwaheng.popularmovies.model.MovieBean;
 
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.List;
 public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String LOG_TAG=MovieRecyclerAdapter.class.getSimpleName();
     private final Context context;
-    private ArrayList<Movie> items;
+    private ArrayList<MovieBean> items;
 
 
     MovieViewHolder mViewholder;
@@ -54,7 +54,7 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder vh, final int i) {
        if (items != null) {
             MovieViewHolder viewHolder = (MovieViewHolder) vh;
-            Movie selectedItem = items.get(i);
+           MovieBean selectedItem = items.get(i);
            viewHolder.mMovieNameView.setText(selectedItem.getOriginal_title());
          //   viewHolder.mMovieRatingView.setText(selectedItem.getVote_average()+"");
             Picasso.with(context).load(RecyclerItem.makeTmdbURL(selectedItem.getPoster_path())).into(viewHolder.mImageView);
@@ -68,30 +68,30 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         return items != null ? items.size() : 0;
     }
 
-    public ArrayList<Movie> getItems() {
+    public ArrayList<MovieBean> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<Movie> items) {
+    public void setItems(ArrayList<MovieBean> items) {
         this.items = items;
 
     }
 
-    public void addNewItems(ArrayList<Movie> items) {
+    public void addNewItems(ArrayList<MovieBean> items) {
         this.items = items;
         notifyDataSetChanged();
     }
 
-    public void addItems(List<Movie> items) {
+    public void addItems(List<MovieBean> items) {
         this.items.addAll(items);
         // sortByRating();
         notifyDataSetChanged();
     }
 
     public void sortByPopularity() {
-        Collections.sort(items, new Comparator<Movie>() {
+        Collections.sort(items, new Comparator<MovieBean>() {
             @Override
-            public int compare(Movie lhs, Movie rhs) {
+            public int compare(MovieBean lhs, MovieBean rhs) {
 
                 if (lhs.getPopularity() > rhs.getPopularity())
                     return -1;
@@ -104,9 +104,9 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
     public void sortByRating() {
-        Collections.sort(items, new Comparator<Movie>() {
+        Collections.sort(items, new Comparator<MovieBean>() {
             @Override
-            public int compare(Movie lhs, Movie rhs) {
+            public int compare(MovieBean lhs, MovieBean rhs) {
 
                 if (lhs.getVote_average() > rhs.getVote_average())
                     return -1;

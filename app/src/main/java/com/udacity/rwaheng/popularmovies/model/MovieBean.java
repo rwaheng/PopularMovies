@@ -3,50 +3,38 @@ package com.udacity.rwaheng.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
+import com.udacity.rwaheng.popularmovies.util.ArrayManipulator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-public class Movie implements Parcelable {
+public class MovieBean implements Parcelable {
 
-    @SerializedName("adult")
     private Boolean adult;
-    @SerializedName("backdrop_path")
     private String backdrop_path;
-    @SerializedName("genre_ids")
     private List<Integer> genre_ids = new ArrayList<Integer>();
-    @SerializedName("id")
     private Integer id;
-    @SerializedName("original_language")
     private String original_language;
-    @SerializedName("original_title")
     private String original_title;
-    @SerializedName("overview")
     private String overview;
-    @SerializedName("release_date")
     private String release_date;
-    @SerializedName("poster_path")
     private String poster_path;
-    @SerializedName("popularity")
     private Double popularity;
-    @SerializedName("title")
     private String title;
-    @SerializedName("video")
     private Boolean video;
-    @SerializedName("vote_average")
     private Double vote_average;
-    @SerializedName("vote_count")
     private Integer vote_count;
 
 
-    public Movie(Movie movie) {
+    public MovieBean(MovieBean movie) {
        // this.
     }
-    public Movie() {
+    public MovieBean() {
     }
 
     public String getTitle() {
@@ -188,10 +176,10 @@ public class Movie implements Parcelable {
         return 0;
     }
 
-    private Movie(Parcel in) {
+    private MovieBean(Parcel in) {
         adult=in.readString().equals("true")?true : false;
         backdrop_path=in.readString();
-         genre_ids=Movie.convertToIntegerList(in.createIntArray());
+         genre_ids=ArrayManipulator.convertToIntegerList(in.createIntArray());
         id=in.readInt();
         original_language=in.readString();
         original_title=in.readString();
@@ -211,7 +199,7 @@ public class Movie implements Parcelable {
         dest.writeString( (adult ? "true" : "false"));
         dest.writeString(backdrop_path);
        // private List<Integer> genre_ids = new ArrayList<Integer>();
-        dest.writeIntArray(Movie.convertToIntArray(genre_ids));
+        dest.writeIntArray(ArrayManipulator.convertToIntArray(genre_ids));
         dest.writeInt(id);
         dest.writeString(original_language);
         dest.writeString(original_title);
@@ -227,35 +215,16 @@ public class Movie implements Parcelable {
     }
 
 
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
+    public static final Parcelable.Creator<MovieBean> CREATOR = new Parcelable.Creator<MovieBean>() {
+        public MovieBean createFromParcel(Parcel in) {
+            return new MovieBean(in);
         }
 
-        public Movie[] newArray(int size) {
-            return new Movie[size];
+        public MovieBean[] newArray(int size) {
+            return new MovieBean[size];
         }
     };
 
 
-    public static int[] convertToIntArray(List<Integer> integers)
-    {
-        int[] ret = new int[integers.size()];
-        for (int i=0; i < ret.length; i++)
-        {
-            ret[i] = integers.get(i).intValue();
-        }
-        return ret;
-    }
 
-    public static List<Integer> convertToIntegerList(int []integers)
-    {
-        ArrayList<Integer> arraylist = new ArrayList<>(integers.length);
-        for (int i=0; i < integers.length; i++)
-        {
-           // ret[i] = integers.get(i).intValue();
-            arraylist.set(i,integers[i]);
-        }
-        return arraylist;
-    }
 }

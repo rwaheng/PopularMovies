@@ -1,7 +1,7 @@
 package com.udacity.rwaheng.popularmovies.adapter;
 
 
-import com.udacity.rwaheng.popularmovies.model.Movie;
+import com.udacity.rwaheng.popularmovies.model.MovieBean;
 
 /**
  * Created by rwaheng on 8/1/2015.
@@ -17,22 +17,22 @@ public class RecyclerItem{
     final static private String IMAGE_VLARGE_SIZE = "w780";
     final static private String NO_PICTURE = "http://i.media-imdb.com/images/SFa6c7a966d6dcebed648b97af73c87f0d/nopicture/67x98/film.png";
 
-    private Movie movie;
+    private MovieBean movie;
     private static String defaultSize=IMAGE_MEDIUM_SIZE;
 
     public RecyclerItem() {
-        movie=new Movie();
+        movie=new MovieBean();
 
     }
-    public RecyclerItem(Movie movie) {
+    public RecyclerItem(MovieBean movie) {
         this.movie=movie;
     }
 
-    public Movie getMovie() {
+    public MovieBean getMovie() {
         return movie;
     }
 
-    public void setMovie(Movie movie) {
+    public void setMovie(MovieBean movie) {
         this.movie = movie;
     }
 

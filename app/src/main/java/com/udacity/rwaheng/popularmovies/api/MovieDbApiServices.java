@@ -2,12 +2,13 @@ package com.udacity.rwaheng.popularmovies.api;
 
 
 
-import com.udacity.rwaheng.popularmovies.model.Results;
+import com.udacity.rwaheng.popularmovies.model.MovieResults;
 
 import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 
@@ -21,11 +22,18 @@ URL: /discover/movie?sort_by=popularity.desc
      void GetMoviesBy(
 			 @Query("page") int page,
 			 @Query("sort_by") String sort_by,
-			 Callback<List<Results>> callback);
+			 Callback<List<MovieResults>> callback);
 	 @GET("/discover/movie")
-	 Results  GetMoviesBy(
+	 MovieResults  GetMoviesBy(
 			 @Query("page") int page,
 			 @Query("sort_by") String sort_by);
+
+
+	@GET("/movie/{id}/videos ")
+	MovieResults getVideos(@Path("id") String id);
+
+	@GET("/movie/{id}/reviews ")
+	MovieResults getReviews(@Path("id") String id);
 	 
 /*
 What is are the best movies from 2010?
@@ -42,10 +50,10 @@ URL: /discover/movie?primary_release_year=2010&sort_by=vote_average.desc
 			@Query("primary_release_date.gte") String from,
 			@Query("primary_release_date.lt") String to,
 			@Query("page") String page,
-			Callback<List<Results>> callback);
+			Callback<List<MovieResults>> callback);
 
 	@GET("/discover/movie")
-	Results GetMoviesByReleaseDate(
+	MovieResults GetMoviesByReleaseDate(
 			@Query("primary_release_date.gte") String from,
 			@Query("primary_release_date.lt") String to,
 			@Query("page") String page);
@@ -63,10 +71,10 @@ URL: /discover/movie/?certification_country=US&certification=R&sort_by=vote_aver
 			 @Query("certification") String certification,
 			 @Query("page") int page,
 			 @Query("sort_by") String sort_by,
-			 Callback<List<Results>> callback);
+			 Callback<List<MovieResults>> callback);
 
 	@GET("/discover/movie")
-	Results GetMoviesByPopularityAndRating(
+	MovieResults GetMoviesByPopularityAndRating(
 			@Query("certification_country") String certification_country,
 			@Query("certification") String certification,
 			@Query("page") int page,

@@ -25,8 +25,8 @@ import com.udacity.rwaheng.popularmovies.adapter.MovieRecyclerAdapter;
 import com.udacity.rwaheng.popularmovies.adapter.RecyclerItem;
 import com.udacity.rwaheng.popularmovies.api.MovieDbApiClient;
 import com.udacity.rwaheng.popularmovies.api.MovieDbApiServices;
-import com.udacity.rwaheng.popularmovies.model.Movie;
-import com.udacity.rwaheng.popularmovies.model.Results;
+import com.udacity.rwaheng.popularmovies.model.MovieBean;
+import com.udacity.rwaheng.popularmovies.model.MovieResults;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class MovieRecyclerFragment extends Fragment {
     private MovieRecyclerAdapter mMovieRecyclerAdapter;
     private MovieDbApiServices mMovieDbApiServices;
     private AppCompatActivity appCompatActivity;
-    private ArrayList<Movie> movieList;
+    private ArrayList<MovieBean> movieList;
   //  private Results mResult;
     private boolean mLoadingFlag;
     private LayoutInflater mInflater;
@@ -132,14 +132,15 @@ public class MovieRecyclerFragment extends Fragment {
 
     public void invokeMovieDetailActivity(int position) {
 
-        List<Movie> array=mMovieRecyclerAdapter.getItems();
+        List<MovieBean> array=mMovieRecyclerAdapter.getItems();
         Intent intent= new Intent(appCompatActivity,MovieDetailActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("title", array.get(position).getOriginal_title());
-        intent.putExtra("image_path", RecyclerItem.makeTmdbURL(array.get(position).getPoster_path()));
-        intent.putExtra("overview",array.get(position).getOverview());
-        intent.putExtra("vote",array.get(position).getVote_average());
-        intent.putExtra("release_date",array.get(position).getRelease_date());
+       // intent.putExtra("title", array.get(position).getOriginal_title());
+        //intent.putExtra("image_path", RecyclerItem.makeTmdbURL(array.get(position).getPoster_path()));
+        //intent.putExtra("overview",array.get(position).getOverview());
+        //intent.putExtra("vote",array.get(position).getVote_average());
+        //intent.putExtra("release_date",array.get(position).getRelease_date());
+        intent.putExtra("movie",array.get(position));
         appCompatActivity.startActivity(intent);
     }
 
@@ -198,7 +199,7 @@ public class MovieRecyclerFragment extends Fragment {
         @Override
         protected void onPostExecute(Object results) {
             super.onPostExecute(results);
-            movieList = ((Results) results).getResults();
+            movieList = ((MovieResults) results).getResults();
             pref=PreferencesManager.initializeInstance(appCompatActivity);
             PAGE_COUNT=pref.getValuePageCount();
             Log.v(LOG_TAG,"page count :-"+PAGE_COUNT+" "+pref.getValuePageCount());
@@ -226,7 +227,7 @@ public class MovieRecyclerFragment extends Fragment {
         @Override
         protected Object doInBackground(Object[] params) {
            Log.v(LOG_TAG, "doInBackground  GetMoviesBy "+(int) params[0]+"   "+(String) params[1]);
-            Results result;
+            MovieResults result;
             mLoadingFlag = true;
             if (mMovieDbApiServices == null)
                 mMovieDbApiServices = MovieDbApiClient.getMovieService();
