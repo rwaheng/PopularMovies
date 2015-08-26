@@ -101,4 +101,16 @@ public class VideoBean implements Parcelable{
             return new VideoBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "VideoBean{" +
+                "id='" + id + '\'' +
+                ", iso6391='" + iso6391 + '\'' +
+                ", key='" + key + '\'' +
+                ", name='" + name + '\'' +
+                ", site='" + site + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

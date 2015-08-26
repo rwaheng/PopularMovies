@@ -55,9 +55,13 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
        if (items != null) {
             MovieViewHolder viewHolder = (MovieViewHolder) vh;
            MovieBean selectedItem = items.get(i);
-           viewHolder.mMovieNameView.setText(selectedItem.getOriginal_title());
-         //   viewHolder.mMovieRatingView.setText(selectedItem.getVote_average()+"");
-            Picasso.with(context).load(RecyclerItem.makeTmdbURL(selectedItem.getPoster_path())).into(viewHolder.mImageView);
+
+         if(null!=viewHolder.mMovieNameView)
+                    viewHolder.mMovieNameView.setText(selectedItem.getOriginal_title());
+         if(null!=viewHolder.mMovieRatingView)
+                    viewHolder.mMovieRatingView.setText(selectedItem.getVote_average()+"");
+
+         Picasso.with(context).load(RecyclerItem.makeTmdbURL(selectedItem.getPoster_path())).into(viewHolder.mImageView);
 
             //Log.v(LOG_TAG ,selectedItem.getOriginal_title()+" "+i);
            }

@@ -3,6 +3,8 @@ package com.udacity.rwaheng.popularmovies.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by rwaheng on 8/6/2015.
  */
@@ -12,6 +14,10 @@ public class PreferencesManager {
     public static final String PREF_NAME= "movie_preference";
     public static final String BY_POPULARITY="popularity.desc";
     public static final String BY_RATING="vote_average.desc";
+
+    public static final String FAV_MOVIE="fav_movie";
+
+
 
 
     public static final String KEY_SORT_BY="sort_by";
@@ -39,6 +45,40 @@ public class PreferencesManager {
                 .putString(KEY_SORT_BY, value)
                 .apply();
     }
+    public void addFavMovie(String value) {
+        String tmp= mPref.getString(FAV_MOVIE, "");
+
+        if(!tmp.contains(value)){
+            tmp=tmp+"|"+value;
+        }
+
+        mPref.edit()
+                .putString(FAV_MOVIE, tmp)
+                .apply();
+    }
+
+    public String getFavMovie() {
+        return mPref.getString(FAV_MOVIE, "");
+    }
+
+    public void removeFavMovie(String value) {
+        String tmp= mPref.getString(FAV_MOVIE, "");
+        StringBuffer sb= new StringBuffer();
+
+        if(tmp.contains(value)){
+            StringTokenizer st= new StringTokenizer(tmp,"|");
+            while (st.hasMoreElements()) {
+                String str= (String) st.nextElement();
+                if(!st.equals(value))
+                sb.append(str+"|");
+            }
+        }
+        mPref.edit()
+                .putString(FAV_MOVIE, sb.toString())
+                .apply();
+
+    }
+
 
     public void setValuePageCount(int value) {
         mPref.edit()

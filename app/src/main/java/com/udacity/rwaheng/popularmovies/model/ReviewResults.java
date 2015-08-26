@@ -8,15 +8,26 @@ import java.util.List;
 /**
  * Created by rwaheng on 8/18/2015.
  */
-public class PreviewResults {
+public class ReviewResults {
         private Integer id;
         private Integer page;
         @SerializedName("results")
-        private List<PreviewBean> results = new ArrayList<PreviewBean>();
+        private List<ReviewBean> reviews = new ArrayList<ReviewBean>();
         @SerializedName("total_pages")
         private Integer totalPages;
         @SerializedName("total_results")
         private Integer totalResults;
+
+    @Override
+    public String toString() {
+        return "ReviewResults{" +
+                "id=" + id +
+                ", page=" + page +
+                ", reviews=" + reviews +
+                ", totalPages=" + totalPages +
+                ", totalResults=" + totalResults +
+                '}';
+    }
 
     public Integer getId() {
         return id;
@@ -34,12 +45,12 @@ public class PreviewResults {
         this.page = page;
     }
 
-    public List<PreviewBean> getResults() {
-        return results;
+    public List<ReviewBean> getReviews() {
+        return reviews;
     }
 
-    public void setResults(List<PreviewBean> results) {
-        this.results = results;
+    public void setReviews(List<ReviewBean> reviews) {
+        this.reviews = reviews;
     }
 
     public Integer getTotalPages() {

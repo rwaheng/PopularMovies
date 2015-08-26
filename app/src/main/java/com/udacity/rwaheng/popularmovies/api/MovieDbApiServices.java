@@ -3,6 +3,8 @@ package com.udacity.rwaheng.popularmovies.api;
 
 
 import com.udacity.rwaheng.popularmovies.model.MovieResults;
+import com.udacity.rwaheng.popularmovies.model.ReviewResults;
+import com.udacity.rwaheng.popularmovies.model.VideoResults;
 
 import java.util.List;
 
@@ -29,11 +31,11 @@ URL: /discover/movie?sort_by=popularity.desc
 			 @Query("sort_by") String sort_by);
 
 
-	@GET("/movie/{id}/videos ")
-	MovieResults getVideos(@Path("id") String id);
+	@GET("/movie/{id}/videos")
+	VideoResults getVideos(@Path("id") String id);
 
-	@GET("/movie/{id}/reviews ")
-	MovieResults getReviews(@Path("id") String id);
+	@GET("/movie/{id}/reviews")
+	ReviewResults getReviews(@Path("id") String id);
 	 
 /*
 What is are the best movies from 2010?

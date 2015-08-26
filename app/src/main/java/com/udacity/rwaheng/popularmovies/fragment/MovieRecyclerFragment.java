@@ -50,6 +50,18 @@ public class MovieRecyclerFragment extends Fragment {
     final private int MAX_PAGE = 2;
     private int PAGE_COUNT = 1;
 
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(MovieBean movieBean);
+    }
+
     @Override
     public void onAttach(Activity activity) {
         appCompatActivity = (AppCompatActivity) activity;
@@ -99,7 +111,9 @@ public class MovieRecyclerFragment extends Fragment {
                     new RecyclerItemClickListener(appCompatActivity, new RecyclerItemClickListener.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
-                            invokeMovieDetailActivity(position);
+                            ((Callback)getActivity()).onItemSelected(((List<MovieBean>)mMovieRecyclerAdapter.getItems()).get(position));
+
+                          //  invokeMovieDetailActivity(((List<MovieBean>)mMovieRecyclerAdapter.getItems()).get(position));
                         }
                     }));
 
@@ -130,19 +144,7 @@ public class MovieRecyclerFragment extends Fragment {
     }
 
 
-    public void invokeMovieDetailActivity(int position) {
 
-        List<MovieBean> array=mMovieRecyclerAdapter.getItems();
-        Intent intent= new Intent(appCompatActivity,MovieDetailActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-       // intent.putExtra("title", array.get(position).getOriginal_title());
-        //intent.putExtra("image_path", RecyclerItem.makeTmdbURL(array.get(position).getPoster_path()));
-        //intent.putExtra("overview",array.get(position).getOverview());
-        //intent.putExtra("vote",array.get(position).getVote_average());
-        //intent.putExtra("release_date",array.get(position).getRelease_date());
-        intent.putExtra("movie",array.get(position));
-        appCompatActivity.startActivity(intent);
-    }
 
 
 

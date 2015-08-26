@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by rwaheng on 8/18/2015.
  */
-public class PreviewBean implements Parcelable{
+public class ReviewBean implements Parcelable{
         private String id;
         private String author;
         private String content;
@@ -58,20 +58,30 @@ public class PreviewBean implements Parcelable{
 
     }
 
-    private PreviewBean(Parcel in) {
+    private ReviewBean(Parcel in) {
        id=in.readString();
         author=in.readString();
         content=in.readString();
         url=in.readString();
     }
 
-    public static final Parcelable.Creator<PreviewBean> CREATOR = new Parcelable.Creator<PreviewBean>() {
-        public PreviewBean createFromParcel(Parcel in) {
-            return new PreviewBean(in);
+    public static final Parcelable.Creator<ReviewBean> CREATOR = new Parcelable.Creator<ReviewBean>() {
+        public ReviewBean createFromParcel(Parcel in) {
+            return new ReviewBean(in);
         }
 
-        public PreviewBean[] newArray(int size) {
-            return new PreviewBean[size];
+        public ReviewBean[] newArray(int size) {
+            return new ReviewBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "ReviewBean{" +
+                "id='" + id + '\'' +
+                ", author='" + author + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

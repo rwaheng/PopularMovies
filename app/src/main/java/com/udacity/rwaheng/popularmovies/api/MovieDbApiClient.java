@@ -11,7 +11,7 @@ public class MovieDbApiClient {
     public static MovieDbApiServices getMovieService() {
         if (movieclient == null) {
             RestAdapter restAdapter = new RestAdapter.Builder()
-                   .setLogLevel(RestAdapter.LogLevel.FULL)
+                  // .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setEndpoint("http://api.themoviedb.org/3")
                     .setRequestInterceptor(new RequestInterceptor() {
                         @Override
