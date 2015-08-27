@@ -11,6 +11,9 @@
     <color name="dark_green">#029389</color>
     <color name="light_green">#2db780</color>
 
+    <color name="favorite_selected">#ffff00</color>
+    <color name="favorite_not_selected"> #ffffff</color>
+
     <color name="selected_gray">#ffdbdbdb</color>
     <color name="light_gray">#FAFAFA</color>
     <color name="counter_bg">#E21B45</color>

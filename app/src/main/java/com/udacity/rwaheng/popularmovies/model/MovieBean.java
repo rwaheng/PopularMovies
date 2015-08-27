@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
+import com.udacity.rwaheng.popularmovies.model.movie.MovieAllBean;
 import com.udacity.rwaheng.popularmovies.util.ArrayManipulator;
 
 import java.util.ArrayList;
@@ -34,6 +35,23 @@ public class MovieBean implements Parcelable {
     public MovieBean(MovieBean movie) {
        // this.
     }
+
+    public MovieBean(MovieAllBean movie) {
+        this.adult=movie.getAdult();
+        this.backdrop_path=movie.getBackdropPath();
+        this.id=movie.getId();
+        this.original_language=movie.getOriginalLanguage();
+        this.original_title=movie.getOriginalTitle();
+        this.overview=movie.getOverview();
+        this.release_date=movie.getReleaseDate();
+        this.poster_path=movie.getPosterPath();
+        this.popularity=movie.getPopularity();
+        this.title=movie.getTitle();
+        this.video=movie.getVideo();
+        this.vote_average=movie.getVoteAverage();
+        this.vote_count=movie.getVoteCount();
+    }
+
     public MovieBean() {
     }
 

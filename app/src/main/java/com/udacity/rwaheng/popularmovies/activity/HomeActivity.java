@@ -2,13 +2,15 @@ package com.udacity.rwaheng.popularmovies.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 
 import com.udacity.rwaheng.popularmovies.fragment.MovieDetailFragment;
 import com.udacity.rwaheng.popularmovies.fragment.MovieRecyclerFragment;
 import com.udacity.rwaheng.popularmovies.R;
 import com.udacity.rwaheng.popularmovies.model.MovieBean;
+import com.udacity.rwaheng.popularmovies.util.PreferencesManager;
 
 import java.util.List;
 
@@ -75,17 +77,19 @@ public class HomeActivity extends BaseActivity implements MovieRecyclerFragment.
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
-            Log.v(LOG_TAG,"mTwoPane click");
+            //Log.v(LOG_TAG,"mTwoPane click");
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_moviedetail, fragment)
                     .commit();
         } else {
-            Log.v(LOG_TAG,"mOnePane click");
+            //Log.v(LOG_TAG,"mOnePane click");
             Intent intent= new Intent(this,MovieDetailActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("movie", movieBean);
             this.startActivity(intent);
         }
     }
+
+
 }

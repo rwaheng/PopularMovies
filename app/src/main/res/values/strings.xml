@@ -7,5 +7,14 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="action_settings_popularity">Most Popular</string>
     <string name="action_settings_rating">Highest Rated</string>
+    <string name="action_settings_Favorite">Favorite</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
+
+
+    <string name="label_title">Title</string>
+    <string name="label_release_date">Release Date</string>
+    <string name="label_rating">Rating</string>
+    <string name="label_trailers">Trailers</string>
+    <string name="label_overview">Overview</string>
+    <string name="label_review">Reviews</string>
 </resources>

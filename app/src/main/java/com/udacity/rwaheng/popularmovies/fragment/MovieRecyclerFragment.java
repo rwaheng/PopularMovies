@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup.LayoutParams;
 import android.util.Log;
@@ -17,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.udacity.rwaheng.popularmovies.model.movie.MovieAllBean;
+import com.udacity.rwaheng.popularmovies.util.FetchDataAsync;
 import com.udacity.rwaheng.popularmovies.util.PreferencesManager;
 import com.udacity.rwaheng.popularmovies.R;
 import com.udacity.rwaheng.popularmovies.activity.MovieDetailActivity;
@@ -30,6 +34,7 @@ import com.udacity.rwaheng.popularmovies.model.MovieResults;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by rwaheng on 8/1/2015.
@@ -71,7 +76,7 @@ public class MovieRecyclerFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("message", "This is my message to be reloaded");
+      //  outState.putString("message", "This is my message to be reloaded");
        outState.putParcelableArrayList("list", movieList);
     }
     @Override
@@ -102,10 +107,10 @@ public class MovieRecyclerFragment extends Fragment {
                 }
 
             }else {
-                new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
-                setHasOptionsMenu(true);
-            }
+                new FetchMovie().execute(FetchMovie.GET_DISCOVERY_MOVIE, pref.getValuePageCount(), pref.getValueSortBy());
 
+            }
+            setHasOptionsMenu(true);
 
             mRecyclerView.addOnItemTouchListener(
                     new RecyclerItemClickListener(appCompatActivity, new RecyclerItemClickListener.OnItemClickListener() {
@@ -130,14 +135,11 @@ public class MovieRecyclerFragment extends Fragment {
 
                     if (!mLoadingFlag) {
                         if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount && PAGE_COUNT<=MAX_PAGE) {
-                            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
+                            new FetchMovie().execute(FetchMovie.GET_DISCOVERY_MOVIE,pref.getValuePageCount(), pref.getValueSortBy());
                            // Log.v(LOG_TAG, "Wow");
                         }
                     }
-
-
-                 //   Log.v(LOG_TAG,"  "+dx+"  "+dy+"   "+totalItemCount+"   "+visibleItemCount+"    "+pastVisiblesItems+"  "+mLoadingFlag);
-                }
+               }
             });
         }
         return mRecyclerView;
@@ -148,20 +150,6 @@ public class MovieRecyclerFragment extends Fragment {
 
 
 
-//for SwipeRefreshLayout onRefresh only (not used)
-    public void onRefresh() {
-
-        // getSwipeRefreshLayout().postInvalidateDelayed(20000);
-       // Log.v("onRefresh", "onRefresh");
-
-        if (PAGE_COUNT <= MAX_PAGE) {
-          //  Log.v(LOG_TAG, "onRefresh " + PAGE_COUNT);
-            new FetchMovie().execute(PAGE_COUNT, "popularity.desc");
-        } else {
-            //Log.v(LOG_TAG, "onRefresh not call" + PAGE_COUNT);
-            //getSwipeRefreshLayout().setRefreshing(false);
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -178,8 +166,8 @@ public class MovieRecyclerFragment extends Fragment {
             pref=PreferencesManager.initializeInstance(appCompatActivity);
             pref.setValueSortBy(PreferencesManager.BY_POPULARITY);
             pref.setValuePageCount(1);
-          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByPopularity  " + pref.getValueSortBy());
-            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
+           Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByPopularity  " + pref.getValueSortBy());
+            new FetchMovie().execute(FetchMovie.GET_DISCOVERY_MOVIE,pref.getValuePageCount(), pref.getValueSortBy());
 
             return true;
         } else if (id == R.id.action_settings_rating) {
@@ -187,9 +175,22 @@ public class MovieRecyclerFragment extends Fragment {
             pref=PreferencesManager.initializeInstance(appCompatActivity);
             pref.setValueSortBy(PreferencesManager.BY_RATING);
             pref.setValuePageCount(1);
-          //  Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByRating  " + pref.getValueSortBy());
-            new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
+            Log.v(LOG_TAG, "onOptionsItemSelected " + "sortByRating  " + pref.getValueSortBy());
+            new FetchMovie().execute(FetchMovie.GET_DISCOVERY_MOVIE,pref.getValuePageCount(), pref.getValueSortBy());
 
+            return true;
+        }else if (id == R.id.action_settings_favorite) {
+            // mMovieRecyclerAdapter.sortByRating();
+            pref=PreferencesManager.initializeInstance(appCompatActivity);
+           // pref.setValueSortBy(PreferencesManager.BY_RATING);
+            pref.setValuePageCount(1);
+            String favMovieList=pref.getFavMovie();
+
+            Log.v(LOG_TAG,  "favMovieList"+favMovieList);
+
+            //Log.v(LOG_TAG,favMovieList);
+          //  new FetchMovie().execute(pref.getValuePageCount(), pref.getValueSortBy());
+            new FetchMovie().execute(FetchMovie.GET_DETAIL_MOVIE,favMovieList);
             return true;
         }
 
@@ -198,13 +199,18 @@ public class MovieRecyclerFragment extends Fragment {
 
 
     class FetchMovie extends AsyncTask {
+        final static String GET_DISCOVERY_MOVIE="discovery_movie";
+        final static String GET_DETAIL_MOVIE="detail_movie";
+
+
         @Override
         protected void onPostExecute(Object results) {
             super.onPostExecute(results);
-            movieList = ((MovieResults) results).getResults();
+            //movieList = ((MovieResults) results).getResults();
+            movieList=(ArrayList<MovieBean>)results;
             pref=PreferencesManager.initializeInstance(appCompatActivity);
             PAGE_COUNT=pref.getValuePageCount();
-            Log.v(LOG_TAG,"page count :-"+PAGE_COUNT+" "+pref.getValuePageCount());
+            //Log.v(LOG_TAG,"page count :-"+PAGE_COUNT+" "+pref.getValuePageCount());
 
             if (PAGE_COUNT == 1) {
                 mMovieRecyclerAdapter.addNewItems(movieList);
@@ -228,13 +234,40 @@ public class MovieRecyclerFragment extends Fragment {
 
         @Override
         protected Object doInBackground(Object[] params) {
-           Log.v(LOG_TAG, "doInBackground  GetMoviesBy "+(int) params[0]+"   "+(String) params[1]);
-            MovieResults result;
+      //     Log.v(LOG_TAG, "doInBackground  GetMoviesBy " + params[0] + "   " + (int) params[1] + "   " + (String) params[2]);
+            String apiType=(String)params[0];
+            List<MovieBean> result=null;
             mLoadingFlag = true;
             if (mMovieDbApiServices == null)
                 mMovieDbApiServices = MovieDbApiClient.getMovieService();
-            result = mMovieDbApiServices.GetMoviesBy((int) params[0], (String) params[1]);
+            if(FetchMovie.GET_DISCOVERY_MOVIE.equals(apiType)) {
+                result = mMovieDbApiServices.GetMoviesBy((int) params[1], (String) params[2]).getResults();
+            }
+            else if(FetchMovie.GET_DETAIL_MOVIE.equals(apiType)){
+                result= getFavMovies((String)params[1]);
+            }
+
             return result;
+        }
+
+        List<MovieBean> getFavMovies(String favMovieList){
+            if (mMovieDbApiServices == null)
+                mMovieDbApiServices = MovieDbApiClient.getMovieService();
+
+          //  String a="116741|166424|102899";
+            MovieAllBean movieAll;
+            List<MovieBean> movieBeanList= new ArrayList<MovieBean>();
+
+            StringTokenizer st= new StringTokenizer(favMovieList,"|");
+
+            while(st.hasMoreElements()){
+                movieAll=mMovieDbApiServices.getDetailMovie(st.nextToken());
+            //    Log.v(LOG_TAG,movieAll.getBackdropPath());
+              //  Log.v(LOG_TAG,movieAll.getOriginalTitle());
+                if(movieAll!=null)
+                movieBeanList.add(new MovieBean(movieAll));
+            }
+            return movieBeanList;
         }
     }
 

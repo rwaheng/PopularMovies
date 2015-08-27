@@ -45,37 +45,63 @@ public class PreferencesManager {
                 .putString(KEY_SORT_BY, value)
                 .apply();
     }
-    public void addFavMovie(String value) {
-        String tmp= mPref.getString(FAV_MOVIE, "");
+    public boolean addFavMovie(String value) {
+        String movie= mPref.getString(FAV_MOVIE, "");
 
-        if(!tmp.contains(value)){
-            tmp=tmp+"|"+value;
+        boolean added_flag = false;
+
+        if (null == movie || movie.equals("")) {
+            movie = value;
+            added_flag=true;
+        } else {
+            StringTokenizer st = new StringTokenizer(movie,"|");
+            String tmp = null;
+            while (st.hasMoreTokens()) {
+                tmp = st.nextToken();
+                if (value.equals(tmp))
+                    added_flag=true;
+            }
+            if(!added_flag){
+                movie=movie+"|"+value;
+            }
+
         }
 
         mPref.edit()
-                .putString(FAV_MOVIE, tmp)
+                .putString(FAV_MOVIE, movie)
                 .apply();
+
+        return added_flag;
     }
 
     public String getFavMovie() {
         return mPref.getString(FAV_MOVIE, "");
     }
 
-    public void removeFavMovie(String value) {
-        String tmp= mPref.getString(FAV_MOVIE, "");
-        StringBuffer sb= new StringBuffer();
+    public boolean removeFavMovie(String value) {
+        String movie= mPref.getString(FAV_MOVIE, "");
 
-        if(tmp.contains(value)){
-            StringTokenizer st= new StringTokenizer(tmp,"|");
-            while (st.hasMoreElements()) {
-                String str= (String) st.nextElement();
-                if(!st.equals(value))
-                sb.append(str+"|");
-            }
+        boolean remove_flag = false;
+        StringTokenizer st = new StringTokenizer(movie, "|");
+        StringBuffer sb = new StringBuffer();
+        String tmp = null;
+        while (st.hasMoreTokens()) {
+            tmp = st.nextToken();
+
+            if (!value.equals(tmp))
+                sb.append(tmp+"|");
+            else
+                remove_flag = true;
         }
+        if(null!=sb && sb.length()>2)
+        movie=sb.substring(0, sb.length()-1).toString();
+
         mPref.edit()
-                .putString(FAV_MOVIE, sb.toString())
+                .putString(FAV_MOVIE, movie)
                 .apply();
+
+        return remove_flag;
+
 
     }
 

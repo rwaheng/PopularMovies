@@ -5,6 +5,7 @@ package com.udacity.rwaheng.popularmovies.api;
 import com.udacity.rwaheng.popularmovies.model.MovieResults;
 import com.udacity.rwaheng.popularmovies.model.ReviewResults;
 import com.udacity.rwaheng.popularmovies.model.VideoResults;
+import com.udacity.rwaheng.popularmovies.model.movie.MovieAllBean;
 
 import java.util.List;
 
@@ -81,6 +82,11 @@ URL: /discover/movie/?certification_country=US&certification=R&sort_by=vote_aver
 			@Query("certification") String certification,
 			@Query("page") int page,
 			@Query("sort_by") String sort_by);
+	//http://api.themoviedb.org/3/movie/76341?api_key=8b7ea7261c27a2eb09a9c14725e9e588
+
+	@GET("/movie/{movieId}")
+	MovieAllBean getDetailMovie(
+			@Path("movieId") String movieId);
 	 
 /*
 
