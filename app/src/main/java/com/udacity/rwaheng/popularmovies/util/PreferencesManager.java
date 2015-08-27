@@ -2,6 +2,7 @@ package com.udacity.rwaheng.popularmovies.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.StringTokenizer;
 
@@ -85,6 +86,7 @@ public class PreferencesManager {
         StringTokenizer st = new StringTokenizer(movie, "|");
         StringBuffer sb = new StringBuffer();
         String tmp = null;
+        int token_counter=0;
         while (st.hasMoreTokens()) {
             tmp = st.nextToken();
 
@@ -92,9 +94,17 @@ public class PreferencesManager {
                 sb.append(tmp+"|");
             else
                 remove_flag = true;
+
+            token_counter++;
+
+            Log.v("token",token_counter+""+tmp);
         }
+
         if(null!=sb && sb.length()>2)
         movie=sb.substring(0, sb.length()-1).toString();
+        else if(token_counter<=1){
+            movie="";
+        }
 
         mPref.edit()
                 .putString(FAV_MOVIE, movie)
